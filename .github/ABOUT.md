@@ -27,15 +27,24 @@ Gợi ý (copy từng từ vào ô Topics):
 
 ---
 
-## Cách 2: GitHub CLI (sau khi đăng nhập)
+## Cách 2: GitHub CLI — script có sẵn trong repo
 
-Trong PowerShell (đã cài `gh`):
+Trong PowerShell, tại thư mục gốc project:
 
 ```powershell
 gh auth login
+.\scripts\update-github-about.ps1
 ```
 
-Sau đó (một lệnh — chỉnh `homepage` nếu bạn có URL demo):
+Script đọc mô tả tiếng Việt từ `scripts/github-about-description.txt`, cập nhật **description**, **website** và **topics** cho repo `Maichithank8899/-ATN`.
+
+**Lưu ý:** Lệnh `git` thuần **không** thể sửa mục About trên GitHub; cần **`gh`** (GitHub CLI) hoặc chỉnh tay trên web.
+
+---
+
+## Cách 3: GitHub CLI — một lệnh dài (sau khi đăng nhập)
+
+Sau `gh auth login`, có thể chạy trực tiếp (chỉnh `homepage` nếu bạn có URL demo):
 
 ```powershell
 gh repo edit Maichithank8899/-ATN `

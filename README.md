@@ -22,7 +22,10 @@ Hệ thống **theo dõi sức khỏe bệnh nhân theo thời gian thực** qua
 
 ## GitHub About
 
-GitHub **không** lấy mô tả, website hay topics từ file trong repo. Để hết dòng *No description, website, or topics provided*, mở **[.github/ABOUT.md](.github/ABOUT.md)** — có sẵn nội dung để dán vào phần About trên trang repo (hoặc lệnh `gh repo edit` sau `gh auth login`).
+GitHub **không** lấy mô tả, website hay topics từ file trong repo; lệnh **`git` thuần không thể** sửa ô About trên web — cần **GitHub CLI** (`gh`) hoặc chỉnh tay trên github.com.
+
+- **Tự động (khuyến nghị):** sau `gh auth login`, chạy [`scripts/update-github-about.ps1`](scripts/update-github-about.ps1) (mô tả UTF-8 nằm trong `scripts/github-about-description.txt`).
+- **Dán tay / lệnh dài:** xem [.github/ABOUT.md](.github/ABOUT.md).
 
 ## Tính năng
 
