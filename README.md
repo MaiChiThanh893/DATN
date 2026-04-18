@@ -4,6 +4,7 @@ Hệ thống **theo dõi sức khỏe bệnh nhân theo thời gian thực** qua
 
 ## Mục lục
 
+- [GitHub About](#github-about) — chi tiết: [.github/ABOUT.md](.github/ABOUT.md)
 - [Tính năng](#tính-năng)
 - [Kiến trúc & công nghệ](#kiến-trúc--công-nghệ)
 - [Cấu trúc thư mục](#cấu-trúc-thư-mục)
@@ -18,6 +19,10 @@ Hệ thống **theo dõi sức khỏe bệnh nhân theo thời gian thực** qua
 - [Khắc phục sự cố](#khắc-phục-sự-cố)
 
 ---
+
+## GitHub About
+
+GitHub **không** lấy mô tả, website hay topics từ file trong repo. Để hết dòng *No description, website, or topics provided*, mở **[.github/ABOUT.md](.github/ABOUT.md)** — có sẵn nội dung để dán vào phần About trên trang repo (hoặc lệnh `gh repo edit` sau `gh auth login`).
 
 ## Tính năng
 
