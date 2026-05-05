@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . '/lib/storage.php';
+require_once __DIR__ . '/lib/auth.php';
 
 function json_response(array $payload, int $status = 200): void
 {
@@ -30,6 +31,22 @@ function request_data(): array
 }
 
 $action = $_GET['action'] ?? 'devices';
+
+if (!auth_api_allows_public_access($action, $_SERVER['REQUEST_METHOD'] ?? 'GET') && !auth_is_logged_in()) {
+    json_response([
+        'success' => false,
+        'message' => 'Phien dang nhap da het han',
+        'loginUrl' => 'login.php',
+    ], 401);
+}
+
+if (!auth_can_access_api_action($action, $_SERVER['REQUEST_METHOD'] ?? 'GET')) {
+    json_response([
+        'success' => false,
+        'message' => 'Tai khoan nay khong co quyen thuc hien thao tac nay',
+    ], 403);
+}
+
 $store = load_store();
 
 try {

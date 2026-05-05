@@ -6,6 +6,7 @@ const state = {
     deviceQuery: '',
     charts: {},
     pollingHandle: null,
+    role: document.body.dataset.role || '',
 };
 
 const els = {
@@ -78,6 +79,10 @@ function showMessage(text, type = 'info') {
 async function apiGet(action, query = '') {
     const response = await fetch(`${API_BASE}${action}${query}`);
     const data = await response.json();
+    if (response.status === 401) {
+        window.location.href = `login.php?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        throw new Error(data.message || 'Phien dang nhap da het han');
+    }
     if (!response.ok || !data.success) {
         throw new Error(data.message || 'API lỗi');
     }
@@ -85,12 +90,22 @@ async function apiGet(action, query = '') {
 }
 
 async function apiPost(action, payload) {
+    const formData = new URLSearchParams();
+    Object.entries(payload || {}).forEach(([key, value]) => {
+        if (value === undefined || value === null) return;
+        formData.append(key, String(value));
+    });
+
     const response = await fetch(`${API_BASE}${action}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+        body: formData.toString(),
     });
     const data = await response.json();
+    if (response.status === 401) {
+        window.location.href = `login.php?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        throw new Error(data.message || 'Phien dang nhap da het han');
+    }
     if (!response.ok || !data.success) {
         throw new Error(data.message || 'API lỗi');
     }
@@ -258,6 +273,11 @@ function fillForm(device) {
     els.patientNameInput.value = device.patientName || '';
 }
 
+function isEditingDeviceForm() {
+    const activeElement = document.activeElement;
+    return activeElement === els.deviceIdInput || activeElement === els.patientNameInput;
+}
+
 function renderStatusPanel(device, alerts) {
     if (!device) {
         els.currentStatusPanel.className = 'current-status empty-block';
@@ -323,7 +343,9 @@ function clearDetail() {
     els.infoPatientName.textContent = '--';
     els.infoHistoryCount.textContent = '0';
     els.infoCreatedAt.textContent = '--';
-    els.deviceForm.reset();
+    if (!isEditingDeviceForm()) {
+        els.deviceForm.reset();
+    }
     clearMetricStates();
     renderAlerts([]);
     renderStatusPanel(null, []);
@@ -387,7 +409,9 @@ async function loadDeviceDetail(deviceId, scrollIntoView = false) {
 
     state.selectedDeviceId = device.deviceId;
     renderDeviceList();
-    fillForm(device);
+    if (!isEditingDeviceForm()) {
+        fillForm(device);
+    }
 
     els.detailTitle.textContent = `${device.patientName || 'Chưa gán bệnh nhân'} · ${device.deviceId}`;
     els.detailSubtitle.textContent = alerts.length
@@ -485,6 +509,10 @@ function startPolling() {
     }
 
     state.pollingHandle = setInterval(async () => {
+        if (isEditingDeviceForm()) {
+            return;
+        }
+
         try {
             await loadDevices();
         } catch (error) {
@@ -506,8 +534,39 @@ function bindEvents() {
     });
 }
 
+function disableDeviceFormAutocomplete() {
+    const attrs = {
+        autocomplete: 'new-password',
+        autocapitalize: 'off',
+        autocorrect: 'off',
+        spellcheck: 'false',
+    };
+
+    [els.deviceIdInput, els.patientNameInput].forEach((input) => {
+        if (!input) return;
+        Object.entries(attrs).forEach(([name, value]) => {
+            input.setAttribute(name, value);
+        });
+    });
+
+    if (els.deviceForm) {
+        els.deviceForm.setAttribute('autocomplete', 'off');
+    }
+}
+
+function applyRolePermissions() {
+    if (state.role === 'doctor') {
+        return;
+    }
+
+    els.seedBtn.hidden = true;
+    els.deleteBtn.hidden = true;
+}
+
 async function bootstrap() {
     initCharts();
+    disableDeviceFormAutocomplete();
+    applyRolePermissions();
     bindEvents();
     try {
         await loadDevices();

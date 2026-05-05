@@ -1,3 +1,12 @@
+<?php
+
+require_once __DIR__ . '/lib/auth.php';
+
+require_login();
+
+$currentRole = htmlspecialchars(auth_current_role(), ENT_QUOTES, 'UTF-8');
+$currentRoleLabel = htmlspecialchars(auth_current_role_label(), ENT_QUOTES, 'UTF-8');
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -10,7 +19,7 @@
     <link rel="stylesheet" href="assets/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body data-role="<?php echo $currentRole; ?>">
     <div class="dashboard-shell">
         <aside class="sidebar">
             <div class="brand-panel">
@@ -41,10 +50,10 @@
                     <button id="refreshBtn" class="btn btn-primary" type="button">Làm mới dữ liệu</button>
                     <button id="seedBtn" class="btn btn-secondary" type="button">Tạo dữ liệu mẫu</button>
                 </div>
-                <form id="deviceForm" class="device-form">
+                <form id="deviceForm" class="device-form" autocomplete="off">
                     <label>
                         Device ID
-                        <input type="text" id="deviceIdInput" placeholder="VD: ESP32_001" required>
+                        <input type="text" id="deviceIdInput" placeholder="VD: ESP32_001" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
                     </label>
                     <label>
                         Tên bệnh nhân
@@ -79,9 +88,13 @@
                     <p class="breadcrumb">TRANG CHỦ</p>
                     <h2 class="page-title">Dashboard giám sát sức khỏe</h2>
                 </div>
-                <div class="live-indicator">
+                <div class="topbar-actions">
+                    <div class="live-indicator">
                     <span class="pulse-dot"></span>
                     <span>Polling mỗi 3 giây</span>
+                    </div>
+                    <div class="user-pill"><?php echo $currentRoleLabel; ?></div>
+                    <a class="logout-link" href="logout.php">&#272;&#259;ng xu&#7845;t</a>
                 </div>
             </header>
 
