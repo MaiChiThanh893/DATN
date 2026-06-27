@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(dir \"c:\\\\Users\\\\THANH\\\\OneDrive - Meritronics Viet Nam\\\\Download\\\\DATN\" /s /b)"
-    ]
-  }
-}
